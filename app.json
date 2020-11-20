@@ -1,0 +1,54 @@
+{
+  "name": "Rota Gourmet",
+  "displayName": "Rota Gourmet",
+  "expo": {
+    "name": "Rota Gourmet",
+    "slug": "clube-rota-gourmet",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "2.3.9",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/icon.png",
+    "splash": {
+      "image": "./src/assets/images/Splash_pic.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1c1c1c"
+    },
+    "notification": {
+      "icon": "./src/assets/images/icon.png",
+      "color": "#000000"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.cluberotagourmet",
+      "config": {
+        "googleMapsApiKey": "AIzaSyClwqWFLeor8ks2Y5mSduOaQeRKyB6YWqo"
+      },
+      "infoPlist": {
+        "CFBundleDevelopmentRegion": "pt-BR",
+        "NSCameraUsageDescription": "Usando a Câmera você pode tirar uma foto para o Rota Gourmet.",
+        "NSLocationWhenInUseUsageDescription": "Nós utilizamos sua localização(mensagem de aviso).",
+        "LSApplicationQueriesSchemes": [
+          "whatsapp"
+        ]
+      }
+    },
+    "android": {
+      "package": "br.com.approtagourmet",
+      "versionCode": 8,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB8UOxnJ471geYhxLQ2bhAhBSNHzvnZM_g"
+        }
+      }
+    }
+  }
+}
