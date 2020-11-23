@@ -1,5 +1,5 @@
 import React, { Component } from 'react'; 
-import { StatusBar, View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, FlatList, Share, SafeAreaView } from 'react-native';
+import { StatusBar, View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, FlatList, Share, SafeAreaView, Platform } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Icon } from 'react-native-elements'
 
@@ -17,6 +17,11 @@ import def_styles from '../assets/styles/theme.styles';
 const { COLOR, IMAGES, FONT, WEIGHT } = Theme;
 const server = getApi('api');
 moment.locale('pt-BR');
+
+if(Platform.OS === 'android') { // SERVE PARA QUE AS MASCARAS DE NÚMEROS FUNCIONEM NO ANDROID
+  require('intl'); // import intl object
+  require('intl/locale-data/jsonp/pt-BR'); // load the required locale details
+}
 
 class Historic extends Component {
 
@@ -54,7 +59,7 @@ class Historic extends Component {
         }else{
             if (this.props.vouchers && this.props.vouchers.vouchers && this.props.vouchers.vouchers) {
                 this.props.vouchers.vouchers.map((item) => {
-                    economia = economia + (item.valorConta - item.valorDesconto);
+                    economia = economia + item.valorDesconto;
                 });
                 economia = economia.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});   
                 this.setState({economia, economiaLoading: false}) 
@@ -94,7 +99,7 @@ class Historic extends Component {
     }
 
     formatValue(value){
-        value = value.toLocaleString('pt-BR')
+        value = value.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2 })
         let verify = value.split(',');
         if(verify && verify[1] && verify[1].length == 1){
             return value = (verify[0] + ',' + verify[1] + '0')
@@ -208,10 +213,10 @@ class Historic extends Component {
                                             <View style={styles.divisao}/>
                                         <View style={[styles.containerCard,]}>
                                             <View style={styles.detailsContent}>
-                                                <Text style={styles.labelDetails}>Conta: {(item.valorConta).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</Text>
-                                                <Text style={styles.labelDetails}>Valor pago: {(item.valorDesconto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</Text>
+                                                <Text style={styles.labelDetails}>Conta: {(item.valorConta).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2})}</Text>
+                                                <Text style={styles.labelDetails}>Valor pago: {(item.valorConta - item.valorDesconto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2})}</Text>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>    
-                                                    <Text style={[styles.labelDetails, {color: 'green'}]}>Desconto: {(item.valorConta - item.valorDesconto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</Text>
+                                                    <Text style={[styles.labelDetails, {color: 'green'}]}>Desconto: {(item.valorDesconto).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2  })}</Text>
                                                     <Image style={styles.iconModalidade} source={ item.modeloNegocio == 'Acompanhado' ? require('../assets/icons/acompanhado.png') : item.modeloNegocio == 'Individual' ? require('../assets/icons/individual.png') : require('../assets/icons/delivery.png')}  />
                                                 </View>
                                             </View>
@@ -236,8 +241,7 @@ class Historic extends Component {
 const styles = StyleSheet.create({
     containerFlatList: {
         flex: 1, 
-        backgroundColor: COLOR.BACKGROUND,
-        
+        backgroundColor: COLOR.BACKGROUND
     },
     btnShareContainer: {
         flexDirection: 'row',
@@ -294,12 +298,10 @@ const styles = StyleSheet.create({
     headerContainer: {
         paddingLeft: 10,
         flex: 1
-
     },
     divisao: {
         borderTopWidth: 0.7,
-        borderTopColor: '#DCDCDC', 
-        // marginHorizontal: 18, 
+        borderTopColor: '#DCDCDC',
         marginVertical: 15
     },
     containerImage: {
@@ -394,8 +396,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         shadowOffset: {
-        width: 0,
-        height: 3,
+            width: 0,
+            height: 3,
         },
         shadowOpacity: 0.20,
         shadowRadius: 4.68,
@@ -403,24 +405,20 @@ const styles = StyleSheet.create({
     },
     topBarDegradeContainer: {
         borderRadius: 15, 
-        flex: 1,  
-        // alignItems: 'flex-start',
+        flex: 1,
         paddingBottom: responsiveHeight(2), 
         paddingTop: responsiveHeight(4), 
     },
     mainContainer: {
         flex: 1,
         paddingTop: 40,
-        backgroundColor: '#FFB31C',
-        // borderRadius:120,
+        backgroundColor: '#FFB31C'
     },
     flexRow: {
         flexDirection: 'row'
     },
     flexMiddle: {
-        flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center'
+        flex: 1
     },
 })
 

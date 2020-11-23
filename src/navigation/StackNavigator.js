@@ -6,7 +6,7 @@ import StartupApp from '../screens/StartupApp'
 import Onboarding from '../screens/Onboarding'
 const Stack = createStackNavigator();
 
-export default function SingnedOutStack({ navigation, route }) {
+export default function StackNavigator({ navigation, route }) {
 	navigation.setOptions({ headerShown: false, });
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={Login}>

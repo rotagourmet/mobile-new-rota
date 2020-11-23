@@ -147,7 +147,6 @@ class LoadReducer  extends Component {
                 storageUpdate = moment(storageUpdate);
             }
             let diff = agora.diff(storageUpdate, 'days');
-            console.log('DIFF', diff);
             if(restaurantes && vouchers && categorias && storageUpdate && diff < 7){
                 console.log('ENTROU NO STORAGE');
                 this.props.storageRestaurants(restaurantes);

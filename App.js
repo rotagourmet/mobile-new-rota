@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, StatusBar, StyleSheet, View, AsyncStorage, Image, Dimensions } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, AsyncStorage, Image, Dimensions, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Updates from 'expo-updates';
@@ -23,6 +23,8 @@ const server = getApi('api');
 function myiOSPromptCallback(permission){
     // do something with permission value
 }
+
+LogBox.ignoreLogs(['Warning: Cannot update a component from inside the function body of a different component.', "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method."]);
 class App extends Component {
 
     constructor(props) {

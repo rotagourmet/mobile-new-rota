@@ -48,6 +48,11 @@ const server = getApi('api');
 const { width } = Dimensions.get('window')
 moment.locale('pt-BR');
 
+if(Platform.OS === 'android') { // SERVE PARA QUE AS MASCARAS DE NÚMEROS FUNCIONEM NO ANDROID
+  require('intl'); // import intl object
+  require('intl/locale-data/jsonp/pt-BR'); // load the required locale details
+}
+
 class Home extends Component {
 
     _isMounted = false;

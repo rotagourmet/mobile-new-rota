@@ -1,5 +1,5 @@
 import React, { Component } from 'react'; 
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput, KeyboardAvoidingView, ActivityIndicator, Keyboard} from 'react-native';
+import { Platform, View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput, KeyboardAvoidingView, ActivityIndicator, Keyboard} from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 import * as WebBrowser from 'expo-web-browser';
@@ -14,6 +14,11 @@ import def_styles from '../assets/styles/theme.styles'
 
 const { COLOR, IMAGES, FONT, WEIGHT } = Theme;
 const server = getApi('api');
+
+if(Platform.OS === 'android') { // SERVE PARA QUE AS MASCARAS DE NÚMEROS FUNCIONEM NO ANDROID
+  require('intl'); // import intl object
+  require('intl/locale-data/jsonp/pt-BR'); // load the required locale details
+}
 
 class Plans extends Component {
 

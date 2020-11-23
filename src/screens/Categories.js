@@ -17,6 +17,7 @@ import Events from '../utils/Events';
 import { getApi } from '../environments/config'
 import def_styles from '../assets/styles/theme.styles'
 import Pageheader from '../components/Pageheader'
+import DiasAceitacao from "../components/DiasAceitacao";
 
 const { height } = Dimensions.get('window')
 const { COLOR, IMAGES, FONT, WEIGHT } = Theme;
@@ -92,7 +93,7 @@ class Categories extends Component {
                                             </View>
                                             
                                             <View style={styles.flexRowRestaurante}>
-                                                <Text style={styles.detailsRestaurante}>{item.culinariaPrincipal.nomeTipo + " • "+ item.distance}</Text>
+                                                <Text style={styles.detailsRestaurante}>{item.culinariaPrincipal.nomeTipo}</Text>
                                             </View>
                                             
                                         </View>
@@ -103,15 +104,7 @@ class Categories extends Component {
                                                 { item.modeloNegocio && item.modeloNegocio[1] && item.modeloNegocio[1].status ? <Image style={styles.iconModalidade} source={require('../assets/icons/individual.png')}/> : null }
                                                 { item.modeloNegocio && item.modeloNegocio[2] && item.modeloNegocio[2].status ? <Image style={styles.iconModalidade} source={require('../assets/icons/delivery.png')}/> : null}
                                             </View>
-                                            <View style={styles.letrasDiasContent}>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.domDia || item.modeloNegocio[0].diasAceitacao.domNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>D</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.segDia || item.modeloNegocio[0].diasAceitacao.segNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>S</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.terDia || item.modeloNegocio[0].diasAceitacao.terNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>T</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.quaDia || item.modeloNegocio[0].diasAceitacao.quaNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>Q</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.quiDia || item.modeloNegocio[0].diasAceitacao.quiNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>Q</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.sexDia || item.modeloNegocio[0].diasAceitacao.sexNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>S</Text>
-                                                <Text style={[styles.letrasDias, {color: item.modeloNegocio[0].diasAceitacao.sabDia || item.modeloNegocio[0].diasAceitacao.sabNoite ? COLOR.SECONDARY : COLOR.GREY_WHITE }]}>S</Text>
-                                            </View>
+                                            <DiasAceitacao item={item} />
                                         </View>
                                     </View>
                                 </View>

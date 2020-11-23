@@ -1,6 +1,6 @@
 // LIB IMPORTS
 import React, { Component } from 'react'; 
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Animated, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Animated, AsyncStorage, Platform } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Icon } from 'react-native-elements'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,6 +10,11 @@ import Theme from '../constants/Theme';
 import Events from '../utils/Events';
 // CONSTS DECLARING
 const { COLOR, IMAGES, FONT, WEIGHT } = Theme;
+
+if(Platform.OS === 'android') { // SERVE PARA QUE AS MASCARAS DE NÚMEROS FUNCIONEM NO ANDROID
+  require('intl'); // import intl object
+  require('intl/locale-data/jsonp/pt-BR'); // load the required locale details
+}
 
 class TopBarHome extends Component {
 
@@ -95,9 +100,9 @@ class TopBarHome extends Component {
         }else{
             if (this.props.vouchers && this.props.vouchers.vouchers && this.props.vouchers.vouchers) {
                 this.props.vouchers.vouchers.map((item) => {
-                    economia = economia + (item.valorConta - item.valorDesconto);
+                    economia = economia + item.valorDesconto;
                 });
-                economia = economia.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                economia = economia.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2})
                 
                 this.setState({economia, economiaLoading: false})
             } else {
@@ -150,7 +155,7 @@ class TopBarHome extends Component {
                                 {this.state.economia ?
                                     <TouchableOpacity style={styles.btnEconomia} onPress={() => this.props.navigation.navigate("Historic")}>
                                         <Image source={require('../assets/icons/receipt.png')} style={styles.imageReciept}/>
-                                        <Text style={styles.topBarSubTitleEconomia}>R$ {this.state.economia}</Text>
+                                        <Text style={styles.topBarSubTitleEconomia}>{this.state.economia}</Text>
                                         <Icon name='chevron-right' type='font-awesome' color={COLOR.BLACK} size={8} />
                                     </TouchableOpacity>
                                 : null}
