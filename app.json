@@ -8,13 +8,13 @@
       "ios",
       "android"
     ],
-    "version": "2.4.0",
+    "version": "2.4.2",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "splash": {
       "image": "./src/assets/images/Splash_pic.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1c1c1c"
+      "backgroundColor": "#161616"
     },
     "notification": {
       "icon": "./src/assets/images/icon.png",
@@ -43,7 +43,7 @@
     },
     "android": {
       "package": "br.com.approtagourmet",
-      "versionCode": 8,
+      "versionCode": 10,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyB8UOxnJ471geYhxLQ2bhAhBSNHzvnZM_g"

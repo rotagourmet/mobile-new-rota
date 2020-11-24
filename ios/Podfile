@@ -18,6 +18,8 @@ target 'bareflow' do
   pod 'react-native-onesignal', :path => '../node_modules/react-native-onesignal'
   
 
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+
   post_install do |installer|
     flipper_post_install(installer)
   end

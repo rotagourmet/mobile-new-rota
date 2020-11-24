@@ -273,12 +273,6 @@ class Login extends Component {
                         <View style={styles.backButtonContainer}>
                             <TouchableOpacity style={styles.backButtonContent} onPress={()=> navigation.goBack()}>
                                 <Icon name='angle-left' type='font-awesome' color={COLOR.BLACK} size={30}  />
-                                <Icon
-            reverse
-            name='ios-american-football'
-            type='ionicon'
-            color='#517fa4'
-            />
                             </TouchableOpacity>
                         </View>
                         <Image source={IMAGES.logoDourada} style={styles.logoDourada}/>

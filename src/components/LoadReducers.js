@@ -239,7 +239,7 @@ class LoadReducer  extends Component {
 
     render(){
         return(
-            <View style={{backgroundColor: '#1c1c1c', position: 'absolute', zIndex: 1000, top: 0, right: 0, left: 0}}>
+            <View style={{backgroundColor: '#161616', position: 'absolute', zIndex: 1000, top: 0, right: 0, left: 0}}>
                 <Image 
                     style={{width: '100%', height: '90%'}}
                     source={require('../assets/images/Splash_pic.png')}
