@@ -20,6 +20,8 @@ target 'bareflow' do
 
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   post_install do |installer|
     flipper_post_install(installer)
   end

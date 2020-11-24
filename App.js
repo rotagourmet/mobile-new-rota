@@ -6,7 +6,7 @@ import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { Provider } from 'react-redux';
-import OneSignal from 'react-native-onesignal';
+import OneSignal from 'react-native-onesignal'; 
 import BottomTabNavigator  from './src/navigation/BottomTabNavigator';
 import createRootNavigator from './src/navigation/StackNavigator';
 import MessageScreen from './src/components/MessageScreen';
@@ -19,38 +19,66 @@ import { getApi } from './src/environments/config';
 const { width, height } = Dimensions.get('window');
 const Stack = createStackNavigator();
 const server = getApi('api');
-
-function myiOSPromptCallback(permission){
-    // do something with permission value
-}
+var appId = 'e64cdb2b-0208-4a41-8dfc-ba4be06760c3';
+var requiresPrivacyConsent = true;
 
 LogBox.ignoreLogs(['Warning: Cannot update a component from inside the function body of a different component.', "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method."]);
 class App extends Component {
 
     constructor(props) {
       super(props);
-      OneSignal.setLogLevel(6, 0);
-      // Replace 'YOUR_ONESIGNAL_APP_ID' with your OneSignal App ID.
-      OneSignal.init("e64cdb2b-0208-4a41-8dfc-ba4be06760c3", {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
-      OneSignal.inFocusDisplaying(2); // Controls what should happen if a notification is received while the app is open. 2 means that the notification will go directly to the device's notification center.
-      
-      // The promptForPushNotifications function code will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step below)
-      OneSignal.promptForPushNotificationsWithUserResponse(myiOSPromptCallback);
-
-      OneSignal.addEventListener('received', this.onReceived);
-      OneSignal.addEventListener('opened', this.onOpened);
-      OneSignal.addEventListener('ids', this.onIds);
-
       this.state = {
         signIn: false,
-        error: false
+        error: false,
+		isPrivacyConsentLoading: requiresPrivacyConsent,
       }
+      // Log level logcat is 6 (VERBOSE) and log level alert is 0 (NONE)
+      OneSignal.setLogLevel(6, 0);
+
+      // Share location of device
+      OneSignal.setLocationShared(true);
+
+      OneSignal.setRequiresUserPrivacyConsent(requiresPrivacyConsent);
+      OneSignal.init(appId, {
+          kOSSettingsKeyAutoPrompt: true,
+      });
+      // Notifications will display as NOTIFICATION type
+      OneSignal.inFocusDisplaying(2);
+
+      // If the app requires privacy consent check if it has been set yet
+      if (requiresPrivacyConsent) {
+      // async 'then' is only so I can sleep using the Promise helper method
+        //   OneSignal.userProvidedPrivacyConsent().then(async (granted) => {
+              // For UI testing purposes wait X seconds to see the loading state
+            //   await sleep(0);
+
+            //   console.log('Privacy Consent status: ' + granted);
+            //   this.setState({hasPrivacyConsent:granted, isPrivacyConsentLoading:false});
+        //   });
+      }
+
+      OneSignal.getPermissionSubscriptionState((response) => {
+          console.log('Device state:');
+          console.log(response);
+
+          let notificationsEnabled = response['notificationsEnabled'];
+          let isSubscribed = response['subscriptionEnabled'];
+
+          this.setState({isSubscribed:notificationsEnabled && isSubscribed, isSubscriptionLoading:false}, () => {
+              OneSignal.setSubscription(isSubscribed);
+          });
+      }); 
     }
 
     async componentDidMount() {
-      OneSignal.removeEventListener('received', this.onReceived);
-      OneSignal.removeEventListener('opened', this.onOpened);
-      OneSignal.removeEventListener('ids', this.onIds);
+      OneSignal.addEventListener('received', this.onNotificationReceived);
+      OneSignal.addEventListener('opened', this.onNotificationOpened);
+      OneSignal.addEventListener('ids', this.onIdsAvailable);
+      // OneSignal.addEventListener('subscription', this.onSubscriptionChange);
+      // OneSignal.addEventListener('permission', this.onPermissionChange);
+      OneSignal.addEventListener('emailSubscription', this.onEmailSubscriptionChange);
+      OneSignal.addEventListener('inAppMessageClicked', this.onInAppMessageClicked);
+    
       this.refreshEvent = Events.subscribe('RefreshRouters', async () => { 
         const logged = await AsyncStorage.getItem("logged");
         this.setState({ signIn: !this.state.signIn })
@@ -63,36 +91,107 @@ class App extends Component {
       this.setState({ready: true, signIn: data[2][1] ? JSON.parse(data[2][1]) : false, user: data[0][1] ? JSON.parse(data[0][1]) : null, token: data[1][1], cidade: data[3][1]})
     }
 
-  onReceived(notification) {
-    console.log("Notification received: ", notification);
-  }
-
-  onOpened(openResult) {
-    console.log('Message: ', openResult.notification.payload.body);
-    console.log('Data: ', openResult.notification.payload.additionalData);
-    console.log('isActive: ', openResult.notification.isAppInFocus);
-    console.log('openResult: ', openResult);
-  }
-
-  onIds(device) {
-    console.log('Device info: ', device);
-  }
+    componentWillUnmount() {
+		OneSignal.removeEventListener('received', this.onNotificationReceived);
+		OneSignal.removeEventListener('opened', this.onNotificationOpened);
+		OneSignal.removeEventListener('ids', this.onIdsAvailable);
+		// OneSignal.removeEventListener('subscription', this.onSubscriptionChange);
+		// OneSignal.removeEventListener('permission', this.onPermissionChange);
+		OneSignal.removeEventListener('emailSubscription', this.onEmailSubscriptionChange);
+		OneSignal.removeEventListener('inAppMessageClicked', this.onInAppMessageClicked);
+    }
 
     async checkUpdate() {
-      try {
-          const update = await Updates.checkForUpdateAsync();
-          if (update.isAvailable) {
-              this.setState({ update: true, ready: false });
-              await Updates.fetchUpdateAsync();
-              Updates.reloadFromCache();
-          }
-          else {
-              this.setState({ ready: true });
-          }
-      } catch (e) {
-          this.setState({ ready: true });
-      }
+		try {
+			const update = await Updates.checkForUpdateAsync();
+			if (update.isAvailable) {
+				this.setState({ update: true, ready: false });
+				await Updates.fetchUpdateAsync();
+				Updates.reloadFromCache();
+			}
+			else {
+				this.setState({ ready: true });
+			}
+		} catch (e) {
+			this.setState({ ready: true });
+		}
+  	}
+	
+	onNotificationReceived = (notification) => {
+        console.log('Notification received: ', notification);
+
+        let debugMsg = 'RECEIVED: \n' + JSON.stringify(notification, null, 2);
+        this.setState({debugText:debugMsg}, () => {
+            console.log("Debug text successfully changed!");
+        });
     }
+
+    /**
+     When a notification is opened this will fire
+     The openResult will contain information about the notification opened
+     */
+    onNotificationOpened = (openResult) => {
+        console.log('Message: ', openResult.notification.payload.body);
+        console.log('Data: ', openResult.notification.payload.additionalData);
+        console.log('isActive: ', openResult.notification.isAppInFocus);
+        console.log('openResult: ', openResult);
+
+        let debugMsg = 'OPENED: \n' + JSON.stringify(openResult.notification, null, 2);
+        this.setState({debugText:debugMsg}, () => {
+            console.log("Debug text successfully changed!");
+        });
+    }
+
+    /**
+     Once the user is registered/updated the onIds will send back the userId and pushToken
+        of the device
+     */
+    onIdsAvailable = (device) => {
+        console.log('Device info: ', device);
+        // Save the userId and pushToken for the device, important for updating the device
+        //  record using the SDK, and sending notifications
+        this.setState({
+            userId: device.userId,
+            pushToken: device.pushToken
+        });
+    }
+
+	onSubscriptionChange = (change) => {
+        console.log('onSubscriptionChange: ', change);
+    }
+
+    /**
+     TODO: Needs to be implemented still in index.js and RNOneSignal.java
+     */
+    onPermissionChange = (change) => {
+        console.log('onPermissionChange: ', change);
+    }
+
+    /**
+     Success for the change of state for the email record? or setting subscription state of email record (so logging out)?
+     TODO: Validate functionality and make sure name is correct
+        Should match the onSubscriptionChange and
+
+     TODO: Validate this is working, might be broken after changing name
+     */
+    onEmailSubscriptionChange = (change) => {
+        console.log('onEmailSubscriptionChange: ', change);
+        this.setState({isEmailLoading:false});
+    }
+
+    /**
+     When an element on an IAM is clicked this will fire
+     The actionResult will contain information about the element clicked
+     */
+    onInAppMessageClicked = (actionResult) => {
+        console.log('actionResult: ', actionResult);
+
+        let debugMsg = 'CLICKED: \n' + JSON.stringify(actionResult, null, 2);
+        this.setState({debugText:debugMsg}, () => {
+            console.log("Debug text successfully changed!");
+        });
+    }
+
 
     render() {
         if (this.state.ready) {

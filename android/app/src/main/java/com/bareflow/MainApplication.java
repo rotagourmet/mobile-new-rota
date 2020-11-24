@@ -47,6 +47,21 @@ public class MainApplication extends Application implements ReactApplication {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
       return packages;
+
+      private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+          @Override
+          public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+          }
+
+          @Override
+          protected List<ReactPackage> getPackages() {
+              return Arrays.</ReactPackage>ReactPackage>asList(
+                new MainReactPackage(),
+                new FBSDKPackage()
+            );
+          }
+      };
     }
 
     @Override

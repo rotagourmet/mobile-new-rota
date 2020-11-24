@@ -374,8 +374,8 @@ class Login extends Component {
                         }
                         {
                             this.state.btnReenviar ?
-                            <TouchableOpacity onPress={() => {this.setState({ loading: true }); this.verificaCelular()}} style={{flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-                                <Text style={[styles.btnLabelReenviar]}>NÁO RECEBI O CÓDIGO</Text>
+                            <TouchableOpacity onPress={() => {this.setState({ loading: true }); this.verificaCelular()}} style={{flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: Platform.OS === "android" ? 20 : 0}}>
+                                <Text style={[styles.btnLabelReenviar]}>NÃO RECEBI O CÓDIGO</Text>
                             </TouchableOpacity>
                             : null
                         }

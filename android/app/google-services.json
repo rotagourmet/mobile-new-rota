@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "829046882591",
+    "firebase_url": "https://push-service-onesignal.firebaseio.com",
+    "project_id": "push-service-onesignal",
+    "storage_bucket": "push-service-onesignal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829046882591:android:374f0657b009db2b39302a",
+        "android_client_info": {
+          "package_name": "br.com.approtagourmet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829046882591-1b566og6htkbenh1f6lijikjal1pgplj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSidumBEqjRWtN7hVGjU4Y01bNoLpIsRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829046882591-1b566og6htkbenh1f6lijikjal1pgplj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

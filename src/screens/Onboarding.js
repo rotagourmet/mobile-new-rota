@@ -20,7 +20,6 @@ const OnboardingComponent = ({hideLastScreen, navigation}) => {
 	const [index, setIndex] = useState(0)
 
 	const suporte = () =>{
-		console.log('Teste', );
         let text = `Olá, meu nome é `
 		let phone = '553432553690';
         const urlWhatsapp = Platform.OS === 'ios' ? `whatsapp://send?phone=${phone}&text=${text}` : `whatsapp://send?phone=${phone}&text=${text}`;
@@ -61,7 +60,7 @@ const OnboardingComponent = ({hideLastScreen, navigation}) => {
 	const swiperContainer = (form) => (
 		<View style={[styles.containerEnd2, {top: hideLastScreen ? 50 : 0,}]}>
 			{hideLastScreen && 
-			<View style={{position: "absolute", top: 120, zIndex: 100}}>
+			<View style={{position: "absolute", top: '10%', zIndex: 100}}>
 				<View>
 					<TouchableOpacity 
 					onPress={() => suporte()}

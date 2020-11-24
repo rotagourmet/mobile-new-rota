@@ -43,7 +43,9 @@
     },
     "android": {
       "package": "br.com.approtagourmet",
-      "versionCode": 10,
+      "useNextNotificationsApi": true,
+      "versionCode": 11,
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyB8UOxnJ471geYhxLQ2bhAhBSNHzvnZM_g"
