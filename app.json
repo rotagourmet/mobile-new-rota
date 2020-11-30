@@ -44,7 +44,7 @@
     "android": {
       "package": "br.com.approtagourmet",
       "useNextNotificationsApi": true,
-      "versionCode": 11,
+      "versionCode": 13,
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {

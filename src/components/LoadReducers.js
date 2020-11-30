@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import moment from 'moment/min/moment-with-locales'
 // EXPO IMPORTS
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 // REDUX IMPORTS
 import { connect } from 'react-redux';
@@ -31,8 +29,6 @@ import Events from '../utils/Events';
 // CONSTS DECLARING
 const server = getApi('api');
 const { width, height } = Dimensions.get('window');
-let aController = new AbortController();
-let signal = aController.signal;
 moment.locale('pt-BR');
 
 class LoadReducer  extends Component {

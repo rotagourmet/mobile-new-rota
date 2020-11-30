@@ -4,7 +4,7 @@ import { responsiveWidth, responsiveHeight, responsiveFontSize } from 'react-nat
 import LottieView from "lottie-react-native";
 import { getApi } from '../environments/config'
 import Theme from '../constants/Theme';
-import * as Location from 'expo-location';
+// import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import { connect } from 'react-redux';
@@ -68,84 +68,6 @@ class StartupApp extends Component {
 
     notifyFadeOut = () => {
         Animated.timing(this.state.fadeValueNotify, { toValue: 0, duration: 2000, useNativeDriver: false}).start();
-    };
-
-    getLocation = async () => {
-        const { status: existingStatus } = await Permissions.getAsync( Permissions.LOCATION );
-        let finalStatus = existingStatus;
-        let viewNotify = true;
-        const { status } = await Permissions.askAsync(Permissions.LOCATION);
-        if (existingStatus !== 'granted' && status !== 'granted') {
-            finalStatus = status;
-            this.setState({
-                localizacao: 'not allowed'
-            })
-
-            if (viewNotify) {
-                this.setState({
-                    loading: false
-                })
-
-                if (Platform.OS == 'ios') {
-                    Alert.alert(
-                        "Localização",
-                        "Você precisa ativar o uso de localização do aplicativo nas configurações.",
-                        [
-                            { text: 'Pergunte depois', onPress: () => null },
-                            { text: 'Ajustes', onPress: () => {Linking.openURL('app-settings:') }},
-                        ],
-                        { cancelable: false },
-                    );
-                } else {
-                    Alert.alert(
-                        "Localização",
-                        "Você precisa ativar o uso de localização do aplicativo nas configurações.",
-                        [
-                            { text: 'OK', onPress: () => null },
-                        ],
-                        { cancelable: false },
-                    );
-                }
-                viewNotify = false;
-
-            }
-        }else{
-            let location = await Location.getCurrentPositionAsync({});
-            let reverseGeocodeAsync = await Location.reverseGeocodeAsync({latitude: location.coords.latitude, longitude: location.coords.longitude});
-
-            if(reverseGeocodeAsync && reverseGeocodeAsync[0]){
-                let form = {
-                    street: reverseGeocodeAsync[0].street,
-                    city: reverseGeocodeAsync[0].city,
-                    region: reverseGeocodeAsync[0].region,
-                    postalCode: reverseGeocodeAsync[0].postalCode,
-                    country: reverseGeocodeAsync[0].country,
-                    name: reverseGeocodeAsync[0].name,
-                    isoCountryCode: reverseGeocodeAsync[0].isoCountryCode,
-                    longitude: location.coords.longitude,
-                    latitude: location.coords.latitude,
-                    accuracy: location.coords.accuracy
-                }
-                //Requisição de registar informações do localizacao
-                let response = await fetch(this.state.server + `api/user/locationData?token=` + this.props.userToken, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({_id: this.props.userData._id, location: form})
-                });
-                response = await response.json();
-                if (response && response.error) {
-                    this.setState({loading: false}); 
-                    
-                }else{
-
-                    this.setState({loading: false}); 
-                }
-            }
-            this.setState({ location, localizacao: reverseGeocodeAsync[0] });
-            this.showNotifyView();
-        }
     };
 
     async authPushNotificationsAsync() {
@@ -231,9 +153,11 @@ class StartupApp extends Component {
     }
 
     showNotifyView(){
+        this.welcomeFadeOut();
         this.locationFadeOut();
         setTimeout(() => {
             this.setState({
+                welcomeContainer: false,
                 notifyContainer: true,
                 locationContainer: false,
             })
@@ -262,7 +186,7 @@ class StartupApp extends Component {
                 <Animated.View style={[ styles.animatedContainerWelcome, { opacity: this.state.fadeValueWelcome } ]}>
                     <Text style={styles.nameWelcome}>{name}</Text>
                     <Text style={styles.titleWelcome}>Seja bem-vindo ao Rota Gourmet!</Text>
-                    <TouchableOpacity onPress={() => this.showLocationView()} style={styles.btnContainer}>
+                    <TouchableOpacity onPress={() => this.showNotifyView()} style={styles.btnContainer}>
                         <Text style={styles.btnLabel}>ENTRAR</Text>
                     </TouchableOpacity>
                 </Animated.View>
@@ -280,7 +204,7 @@ class StartupApp extends Component {
                             style={styles.locationImage}
                             source={require('../assets/animations/location.json')}
                     />
-                    <TouchableOpacity onPress={() => this.getLocation()} style={styles.btnContainer}>
+                    <TouchableOpacity onPress={() => null} style={styles.btnContainer}>
                         {this.state.loading ? <ActivityIndicator size="small" color="#FFFFFF"/> : <Text style={styles.btnLabel}>PERMITIR LOCALIZAÇÃO</Text>}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={ () => this.showNotifyView()} style={styles.btnTransparentContainer}>

@@ -21,7 +21,7 @@ import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimen
 import { useScrollToTop } from '@react-navigation/native';
 import moment from 'moment/min/moment-with-locales'
 // EXPO
-import * as Location from 'expo-location';
+
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
@@ -119,12 +119,9 @@ class Home extends Component {
 
     async sendLocationNotifyData(){
         // SEND INFOS DE LOCATION E NOTIFICATIONS
-        const { statusLoca } = await Permissions.askAsync(Permissions.LOCATION);
+        const statusLoca = null
         let reverseGeocodeAsync;
-        if (statusLoca === 'granted') {
-            let location = await Location.getCurrentPositionAsync({});
-            let reverseGeocodeAsync = await Location.reverseGeocodeAsync({latitude: location.coords.latitude, longitude: location.coords.longitude});
-        }
+        
         const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
         let token;
         let localizacaoInfos = {}
@@ -134,20 +131,7 @@ class Home extends Component {
         }
         // Get the token that identifies this device
         let notificacoesInfos = await registerForPushNotificationsAsync();
-        if(reverseGeocodeAsync && reverseGeocodeAsync[0]){
-            localizacaoInfos = {
-                street: reverseGeocodeAsync[0].street,
-                city: reverseGeocodeAsync[0].city,
-                region: reverseGeocodeAsync[0].region,
-                postalCode: reverseGeocodeAsync[0].postalCode,
-                country: reverseGeocodeAsync[0].country,
-                name: reverseGeocodeAsync[0].name,
-                isoCountryCode: reverseGeocodeAsync[0].isoCountryCode,
-                longitude: location.coords.longitude,
-                latitude: location.coords.latitude,
-                accuracy: location.coords.accuracy
-            }
-        }
+        
         if (this.props.userData && this.props.userData._id) {    
             //Requisição de registar informações do localizacao
             let response = await fetch(server.url + `api/user/locationData?token=` + this.props.userToken, {
@@ -155,7 +139,7 @@ class Home extends Component {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({_id: this.props.userData._id, location: localizacaoInfos, notifications: notificacoesInfos })
+                body: JSON.stringify({_id: this.props.userData._id, location: null, notifications: notificacoesInfos })
             });
             response = await response.json();
             if (response && response.error) {
